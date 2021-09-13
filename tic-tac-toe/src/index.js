@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-/*
-class Square extends React.Component {
+
+/* class Square extends React.Component {
   
   constructor(props){
     super(props);
@@ -24,13 +24,13 @@ class Square extends React.Component {
       </button>
     );
   }
-}
-*/
+} */
+
 
 function Square(props){
   return (
     <button className="square" onClick={props.onClick}>
-      {props.value};
+      {props.value}
     </button>
   );
 }

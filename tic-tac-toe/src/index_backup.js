@@ -56,7 +56,10 @@ class Board extends React.Component {
       line.push(<Square
                   key={j}   //key 属性的属性名必须使用key，不能自定义，这样React才能识别该属性是key
                   value={this.props.squares[j]}
-                  // 这个j会随点击被传递给Game中Board标签里的onClick监听器的箭头函数(i)
+                  /* 
+                    这个j会随点击被传递给Game中Board标签里的onClick监听器的箭头函数(i)
+                    onClick 回调是沿着props链从最内层的监听事件一直传递到外层onClick回调直到调用handleClick方法
+                  */
                   onClick={()=>{this.props.onClick(j)}}    
                 />)
       }
@@ -64,17 +67,15 @@ class Board extends React.Component {
     }
 
     /*
-    再创建一个二维数组board，元素是包裹Square组件的数组line，用于在render方法中逐行渲染
+      再创建一个二维数组board，元素是包裹Square组件的数组line，用于在render方法中逐行渲染
     */
     drawBoard(start,end,rows){
       let newSquareLine;
-      //let lineInsert;
       const board = [];
       for(let i=0;i<rows;i++){
         newSquareLine = this.renderSquare(start,end);
         start+=rows;
         end+=rows;
-        // lineInsert=`<div className="board-row">${newSquareLine}</div>`;
         board.push(newSquareLine)
       }
       return board
@@ -96,7 +97,9 @@ class Board extends React.Component {
             </div>
           )
         }))
-        /*<div>
+        /*
+        以下的逐行渲染被包含所有行的二维数组的map方法执行渲染取代
+        <div>
           { <div className="board-row">
             {this.renderSquare(0,10)}
           </div> 
@@ -207,7 +210,6 @@ class Game extends React.Component {
       }
       temp+=squareNumInLine;
     }
-    //console.log(compareBoard)
     return compareBoard
   }
 

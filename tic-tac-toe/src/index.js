@@ -13,7 +13,7 @@ function Square(props){
 
 class Board extends React.Component {
   renderSquare(i,k) {
-    // render Square components by lines
+    // Render Square components by lines
     let line=[];
     for(let j=i; j<k;j++){ 
       line.push(<Square
@@ -24,7 +24,7 @@ class Board extends React.Component {
       }
     return line;
     }
-
+  // Create an array contains line-arrays containing Square components 
   drawBoard(start,end,rows){
     let newSquareLine;
     const board = [];
@@ -38,7 +38,7 @@ class Board extends React.Component {
   }
 
   render() {
-    // can be rendered by loop
+    // Render board-array by Array.map
     let board=this.drawBoard(0,10,this.props.stateBoard.length);
     return (
       board.map((squareLine, index)=>{
@@ -64,6 +64,7 @@ class Game extends React.Component {
     };
   }
   
+  // Method for onClick callback
   handleClick(i){
     const history = this.state.history.slice(0, this.state.setpNumber+1);
     const current = history[history.length - 1];
@@ -83,6 +84,7 @@ class Game extends React.Component {
     });
   }
 
+  // Create a sync board to the rendered game-board, used as the base of judgment of victory or defeat   
   setCompareBoard(squares, lineNumber,squareNumInLine){
     let compareBoard=this.state.stateBoard.slice();
     let temp=0;
@@ -100,6 +102,7 @@ class Game extends React.Component {
     return compareBoard
   }
 
+  // onClick callback for rolling back by players
   jumpTo(move){
     this.setState({
       setpNumber:move,
@@ -107,6 +110,7 @@ class Game extends React.Component {
     })
   }
 
+  // Method call setCompareBoard and to judge if any play wins
   theWinner=(squares)=>{
     let compareBoard=this.setCompareBoard(squares,10,10);
     console.log(compareBoard);

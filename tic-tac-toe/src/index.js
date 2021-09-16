@@ -25,42 +25,29 @@ class Board extends React.Component {
     return line;
     }
 
+  drawBoard(start,end,rows){
+    let newSquareLine;
+    const board = [];
+    for(let i=0;i<rows;i++){
+      newSquareLine = this.renderSquare(start,end);
+      start+=rows;
+      end+=rows;
+      board.push(newSquareLine)
+    }
+    return board
+  }
+
   render() {
     // can be rendered by loop
+    let board=this.drawBoard(0,10,this.props.stateBoard.length);
     return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0,10)}
-        </div> 
-        <div className="board-row">
-          {this.renderSquare(10,20)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(20,30)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(30,40)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(40,50)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(50,60)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(60,70)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(70,80)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(80,90)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(90,100)}
-        </div>
-      </div>
-    );
+      board.map((squareLine, index)=>{
+        return(
+          <div key = {index} className="board-row">
+            {squareLine}
+          </div>
+        )
+      }))
   }
 }
    
@@ -77,12 +64,14 @@ class Game extends React.Component {
     };
   }
   
-  hanleClick(i){
+  handleClick(i){
     const history = this.state.history.slice(0, this.state.setpNumber+1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     let xIsNext;
-    
+    if(squares[i]==="X" || squares[i]==="O"){
+      return
+    }
     squares[i]=this.state.xIsNext ? "X" : "O";
     xIsNext = !this.state.xIsNext;
     this.setState({
@@ -121,50 +110,55 @@ class Game extends React.Component {
   theWinner=(squares)=>{
     let compareBoard=this.setCompareBoard(squares,10,10);
     console.log(compareBoard);
-    for(let arrIndex=0; arrIndex<compareBoard.length;arrIndex++){
-      for(let squIndex=0;squIndex<compareBoard[arrIndex];squIndex++ ){
-        // these if blocks didn't work
+    for(let arrIndex=3; arrIndex<compareBoard.length-3;arrIndex++){
+      for(let squIndex=3;squIndex<compareBoard[arrIndex].length-3;squIndex++){
         if(
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+1] && 
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+2] &&
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+3] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+4]
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex-1]
           )
           {
+            console.log("if implemented");
             return true;
-        }else if(
+        }
+        else if(
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex] &&
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+2][squIndex] &&
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+3][squIndex] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+4][squIndex]
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex]
           )
           {
             return true;
-        }else if(
+        }
+        else if(
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex+1] &&
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+2][squIndex+2] &&
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+3][squIndex+3] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+4][squIndex+4]
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex+4]
         ){
           return true;
-        }else if (
+        }
+        else if(
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex-1] &&
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-2][squIndex-2] &&
           compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-3][squIndex-3] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-4][squIndex-4]
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex+1]
         ){
           return true;
+        }else{
+         continue;
         }   
       }
     }
-    return false;
+    return false
   }
 
 
   render() {
     const histroy = this.state.history.slice();
     const current = histroy[this.state.setpNumber];
-    let winner=this.theWinner(current.squares)
+    const winner=this.theWinner(current.squares)
     const moves = histroy.map((step, move)=>{   
       const desc = move ? "Go to move #" + move : "Go to game start";
       return (
@@ -187,7 +181,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
-            onClick={(i)=>this.hanleClick(i)} 
+            onClick={(i)=>this.handleClick(i)} 
             stateBoard={this.state.stateBoard}
           />
         </div>

@@ -54,7 +54,7 @@ class Board extends React.Component {
     //用for循环创建一行
     for(let j=i; j<k;j++){ 
       line.push(<Square
-                  squareNum={j} 
+                  key={j}   //key 属性的属性名必须使用key，不能自定义，这样React才能识别该属性是key
                   value={this.props.squares[j]}
                   // 这个j会随点击被传递给Game中Board标签里的onClick监听器的箭头函数(i)
                   onClick={()=>{this.props.onClick(j)}}    
@@ -110,11 +110,12 @@ class Game extends React.Component {
       }],
       xIsNext:true,
       stateBoard:Array(10),
+      setpNumber:0,
     };
   }
   
   hanleClick(i){
-    const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.setpNumber+1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     /*slice() 方法返回一个新的数组对象，这一对象是一个由 begin 和 end 决定的原数组的浅拷贝（包括 begin，不包括end）
@@ -137,8 +138,10 @@ class Game extends React.Component {
       history:history.concat([{
         squares:squares,
       }]), 
+      // 注意，此时history状态本身也在setState里，其长度还没有完成更新，history.length仍是点击回调执行前的长度
+      setpNumber: history.length,
       xIsNext:xIsNext, 
-      //stateBoard:tempBoard  移除stateBoard的重置
+      //stateBoard:tempBoard  移除stateBoard的更新
     });
   }
 
@@ -168,10 +171,22 @@ class Game extends React.Component {
     return compareBoard
   }
 
-  theWinner=()=>{
-    const history = this.state.history;
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
+/* 
+  关于在类组件中绑定事件的回调函数中的this绑定，在函数定义和回调定义中可以有两组写法：
+    1. 正常定义类方法，如jumpTo(move){ }, 类方法被存储在类原型上，在事件绑定中的回调要写为箭头函数的形式,例如：
+       onClick={(params)=>{this.jumpTo(params)}}, 如果写为函数指针回调 onClick={this.jumpTo} 会导致this丢失
+    2. 如果要使用函数指针回调 onClick={this.jumpTo} 的形式，就需要将回调中的this绑定为当前类实例，类方法定义要改为
+       jumpTo = (params) => {}, jumpTo方法被定义在类实例上，是一个实例属性，并且通过箭头函数定义属性的函数体，箭头函数
+       定义的this自动被绑定为函数定义的上下文this，而不随调用方变化
+*/
+  jumpTo(move){
+    this.setState({
+      setpNumber:move,
+      xIsNext:(move % 2)===0,
+    })
+  }
+
+  theWinner=(squares)=>{
     let compareBoard=this.setCompareBoard(squares,10,10);
     console.log(compareBoard);
     for(let arrIndex=0; arrIndex<compareBoard.length;arrIndex++){
@@ -215,8 +230,29 @@ class Game extends React.Component {
 
   render() {
     const histroy = this.state.history.slice();
-    const current = histroy[histroy.length-1];
-    let winner=this.theWinner()
+    const current = histroy[this.state.setpNumber];
+    let winner=this.theWinner(current.squares)
+    // history列表元素会增加，step映射每个列表元素，move映射元素索引。map返回一个数组
+    const moves = histroy.map((step, move)=>{   // move起始值为0，对应数组第一个索引，0可转换为Boolean的false
+      const desc = move ? "Go to move #" + move : "Go to game start";
+      return (
+        /*
+          每当一个列表重新渲染时，React 会根据每一项列表元素的 key 来检索上一次渲染时与每个 key 所匹配的列表项。
+          如果 React 发现当前的列表有一个之前不存在的 key，那么就会创建出一个新的组件。
+          如果 React 发现和之前对比少了一个 key，那么就会销毁之前对应的组件。
+          如果一个组件的 key 发生了变化，这个组件会被销毁，然后使用新的 state 重新创建一份
+          如果是动态列表项本身和列表元素作为被渲染的目标，那么列表及其每一个元素都需要一个key以提供给React做标识，如Board中的line
+          此外不能通过 this.props.key 来获取 key。React 会通过 key 来自动判断哪些组件需要更新。组件是不能访问到它的key的
+          组件的 key 值并不需要在全局都保证唯一，只需要在当前的同一级元素之间保证唯一即可
+        */
+        <li key={move}>
+          <button onClick={()=>{this.jumpTo(move)}}>
+            {desc}
+          </button>
+        </li>
+      )
+    })
+
     console.log(winner);
     let status;
     if(winner){
@@ -236,7 +272,7 @@ class Game extends React.Component {
           <div className="status">
             <div>{status}</div>
           </div>
-          <ol>{/* TODO */}</ol>
+          <ol>{moves}</ol>
         </div>
       </div>
     );

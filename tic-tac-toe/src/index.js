@@ -136,18 +136,18 @@ class Game extends React.Component {
             return true;
         }
         else if(
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex+1] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+2][squIndex+2] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+3][squIndex+3] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex+4]
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex-1] &&
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+2][squIndex-2] &&
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+3][squIndex-3] &&
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex+1]
         ){
           return true;
         }
         else if(
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex-1] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-2][squIndex-2] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-3][squIndex-3] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex+1]
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex+1] &&
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-2][squIndex+2] &&
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-3][squIndex+3] &&
+          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex-1]
         ){
           return true;
         }else{
@@ -164,7 +164,7 @@ class Game extends React.Component {
     const current = histroy[this.state.setpNumber];
     const winner=this.theWinner(current.squares)
     const moves = histroy.map((step, move)=>{   
-      const desc = move ? "Go to move #" + move : "Go to game start";
+    const desc = move ? "Go to move #" + move : "Go to game start";
       return (
         <li key={move}>
           <button onClick={()=>{this.jumpTo(move)}}>

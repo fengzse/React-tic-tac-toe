@@ -244,47 +244,47 @@ class Game extends React.Component {
              排查后发现这是因为遍历超出索引边界，关键是超出索引边界的报错没有任何直接相关index boundary的提示，只是会有
              以上报错语句和超出索引边界的语句指向，记得：以上语句就是js超出索引边界的报错语句
         */
-        if(
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+1] && 
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+2] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+3] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex-1]
-          )
-          {
-            console.log("if implemented");
-            return true;
+             if(
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+1] && 
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+2] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex+3] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex][squIndex-1]
+              )
+              {
+                console.log("if implemented");
+                return true;
+            }
+            else if(
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+2][squIndex] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+3][squIndex] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex]
+              )
+              {
+                return true;
+            }
+            else if(
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex-1] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+2][squIndex-2] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+3][squIndex-3] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex+1]
+            ){
+              return true;
+            }
+            else if(
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex+1] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-2][squIndex+2] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-3][squIndex+3] &&
+              compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex-1]
+            ){
+              return true;
+            }else{
+             continue;
+            }   
+          }
         }
-        else if(
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+2][squIndex] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+3][squIndex] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex]
-          )
-          {
-            return true;
-        }
-        else if(
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex+1] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+2][squIndex+2] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+3][squIndex+3] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex+4]
-        ){
-          return true;
-        }
-        else if(
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-1][squIndex-1] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-2][squIndex-2] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex-3][squIndex-3] &&
-          compareBoard[arrIndex][squIndex]===compareBoard[arrIndex+1][squIndex+1]
-        ){
-          return true;
-        }else{
-         continue;
-        }   
+        return false
       }
-    }
-    return false
-  }
 
 
   render() {
